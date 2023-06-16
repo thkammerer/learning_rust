@@ -2,5 +2,15 @@
     "search.exclude": {
         "**/target": true
     },
-    "lldb.verboseLogging": true
+    "lldb.verboseLogging": true,
+    "rust-analyzer.linkedProjects": [
+        "./learning_rust/Cargo.toml",
+        "./learning_rust/Cargo.toml",
+        "./learning_rust/Cargo.toml",
+        "./learning_rust/Cargo.toml",
+        "./learning_rust/Cargo.toml",
+        "./learning_rust/Cargo.toml",
+        "./learning_rust/Cargo.toml"
+    ],
+    "rustTestExplorer.rootCargoManifestFilePath": ""
 }
