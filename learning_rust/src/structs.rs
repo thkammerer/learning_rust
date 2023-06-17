@@ -9,19 +9,19 @@ pub struct Rational {
 }
 
 impl Rational {
-    pub fn new_from_integer(integer: i32) -> Rational {
-        Rational {
+    pub fn new_from_integer(integer: i32) -> Self {
+        Self {
             numerator: integer,
             denominator: 1,
         }
     }
 
-    pub fn new(numerator: i32, denominator: i32) -> Rational {
-        reduce(numerator, denominator)
+    pub fn new(numerator: i32, denominator: i32) -> Self {
+        create_reduced_radional(numerator, denominator)
     }
 
-    pub fn as_floating_point( &self ) -> f32 {
-        let result : f32 = self.numerator as f32 / self.denominator as f32;
+    pub fn as_floating_point(&self) -> f32 {
+        let result: f32 = self.numerator as f32 / self.denominator as f32;
         result
     }
 }
@@ -37,14 +37,12 @@ impl ops::Add<Rational> for Rational {
 }
 
 impl ops::AddAssign<Rational> for Rational {
-
-    fn add_assign( &mut self, rhs: Rational) {
+    fn add_assign(&mut self, rhs: Rational) {
         let new_numerator = self.denominator * rhs.numerator + self.numerator * rhs.denominator;
         let new_denominator = self.denominator * rhs.denominator;
-        *self = reduce(new_numerator, new_denominator);
+        *self = create_reduced_radional(new_numerator, new_denominator);
     }
 }
-
 
 impl ops::Sub<Rational> for Rational {
     type Output = Rational;
@@ -57,14 +55,12 @@ impl ops::Sub<Rational> for Rational {
 }
 
 impl ops::SubAssign<Rational> for Rational {
-
-    fn sub_assign( &mut self, rhs: Rational) {
+    fn sub_assign(&mut self, rhs: Rational) {
         let new_numerator = self.numerator * rhs.denominator - self.denominator * rhs.numerator;
         let new_denominator = self.denominator * rhs.denominator;
-        *self = reduce(new_numerator, new_denominator);
+        *self = create_reduced_radional(new_numerator, new_denominator);
     }
 }
-
 
 impl ops::Mul<Rational> for Rational {
     type Output = Rational;
@@ -77,14 +73,12 @@ impl ops::Mul<Rational> for Rational {
 }
 
 impl ops::MulAssign<Rational> for Rational {
-
-    fn mul_assign( &mut self, rhs: Rational) {
+    fn mul_assign(&mut self, rhs: Rational) {
         let new_numerator = self.numerator * rhs.numerator;
         let new_denominator = self.denominator * rhs.denominator;
-        *self = reduce(new_numerator, new_denominator);
+        *self = create_reduced_radional(new_numerator, new_denominator);
     }
 }
-
 
 impl ops::Div<Rational> for Rational {
     type Output = Rational;
@@ -97,14 +91,12 @@ impl ops::Div<Rational> for Rational {
 }
 
 impl ops::DivAssign<Rational> for Rational {
-
-    fn div_assign( &mut self, rhs: Rational) {
+    fn div_assign(&mut self, rhs: Rational) {
         let new_numerator = self.numerator * rhs.denominator;
         let new_denominator = self.denominator * rhs.numerator;
-        *self = reduce(new_numerator, new_denominator);
+        *self = create_reduced_radional(new_numerator, new_denominator);
     }
 }
-
 
 impl cmp::PartialEq for Rational {
     fn eq(&self, other: &Self) -> bool {
@@ -112,7 +104,14 @@ impl cmp::PartialEq for Rational {
     }
 }
 
-fn reduce(numerator: i32, denominator: i32) -> Rational {
+fn create_reduced_radional(mut numerator: i32, mut denominator: i32) -> Rational {
+    if denominator == 0 {
+        panic!("The denominator of a rational number must not be 0!")
+    }
+    if denominator < 0 {
+        numerator *= -1;
+        denominator *= -1;
+    }
     let common_divisor = Gcd::gcd(numerator.unsigned_abs(), denominator.unsigned_abs()) as i32;
     Rational {
         numerator: numerator / common_divisor,
@@ -131,6 +130,24 @@ mod test {
         let rational = Rational::new(1, 2);
         assert_eq!(rational.numerator, 1);
         assert_eq!(rational.denominator, 2);
+
+        let rational_neg_numerator = Rational::new( -1, 3 );
+        assert_eq!(rational_neg_numerator.numerator, -1);
+        assert_eq!(rational_neg_numerator.denominator, 3);
+
+        let rational_neg_denominator = Rational::new( 2, -3 );
+        assert_eq!(rational_neg_denominator.numerator, -2);
+        assert_eq!(rational_neg_denominator.denominator, 3);
+
+        let rational_neg_numerator_and_denominator = Rational::new( -2, -5 );
+        assert_eq!(rational_neg_numerator_and_denominator.numerator, 2);
+        assert_eq!(rational_neg_numerator_and_denominator.denominator, 5);
+    }
+    
+    #[test]
+    #[should_panic]
+    fn try_to_create_a_rational_denominator_zero() {
+        let rational = Rational::new( 2, 0 );
     }
 
     #[test]
@@ -184,11 +201,10 @@ mod test {
         let result = a_half / three_quarter;
         assert!(result == Rational::new(2, 3));
     }
-    
+
     #[test]
     fn as_floating_point() {
-        let test = Rational::new( 1, 8 );
-        assert_eq!( test.as_floating_point(), 0.125 );
+        let test = Rational::new(1, 8);
+        assert_eq!(test.as_floating_point(), 0.125);
     }
-
 }
