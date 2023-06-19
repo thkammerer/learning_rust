@@ -5,5 +5,7 @@
 // pub mod traits_with_functions;
 // pub mod enums;
 // pub mod generics;
-pub mod option_enum;
-pub mod result_enum;
+// pub mod option_enum;
+// pub mod result_enum;
+// pub mod hash_maps;
+pub mod lifetimes;
