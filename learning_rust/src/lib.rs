@@ -8,4 +8,5 @@
 // pub mod option_enum;
 // pub mod result_enum;
 // pub mod hash_maps;
-pub mod lifetimes;
+// pub mod lifetimes;
+pub mod closures;
