@@ -9,4 +9,6 @@
 // pub mod result_enum;
 // pub mod hash_maps;
 // pub mod lifetimes;
-pub mod closures;
+// pub mod closures;
+// pub mod function_types;
+pub mod iterators;

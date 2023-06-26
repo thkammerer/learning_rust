@@ -2,7 +2,7 @@
 
 // Tests --------------------------------------------------------------------------
 mod test {
-    use super::*;
+    //    use super::*;
 
     #[test]
     fn test_simple_closure() {
@@ -39,7 +39,7 @@ mod test {
 
     fn division<F: Fn(f32) -> bool>(x: f32, y: f32, f: F) {
         if f(y) == true {
-            println!("The division result is {}", x/y);
+            println!("The division result is {}", x / y);
         } else {
             println!("The division is not possible");
         }
@@ -57,5 +57,58 @@ mod test {
 
         division(10.0, 4.0, division_status);
         division(23.5, 0.0, division_status);
+    }
+
+    #[test]
+    fn test_closure_diff_styles() {
+        let define_inputs_and_outputs = |x: u32| -> u32 { x + 1 };
+        let skip_inputs_and_outputs = |x| x + 1;
+        let skip_bracket_if_single_statement = |x| x + 1;
+
+        assert_eq!(define_inputs_and_outputs(3), 4);
+        assert_eq!(skip_bracket_if_single_statement(3), 4);
+        assert_eq!(skip_inputs_and_outputs(3), 4);
+    }
+
+    #[test]
+    fn test_closure_with_para_immutable() {
+        let mut vec_1 = vec![1, 2, 3];
+
+        let some_closure = || {
+            println!("Vec 1: {:?}", vec_1);
+        };
+        println!("Vec 1: {:?}", vec_1);
+
+        // vec_1[1] = 666; // mutable borrow occurs here
+        some_closure();
+        vec_1[1] = 666;
+    }
+
+    #[test]
+    fn test_closure_with_para_mutable() {
+        let mut vec_1 = vec![1, 2, 3];
+
+        let mut some_closure = || {
+            println!("Vec 1: {:?}", vec_1);
+            vec_1.push(35);
+        };
+
+        // vec_1[1] = 666; // mutable borrow occurs here
+        some_closure();
+        vec_1[1] = 666;
+    }
+
+    #[test]
+    fn test_closure_with_para_move() {
+        let mut vec_1 = vec![1, 2, 3];
+
+        let mut some_closure = || {
+            let vec2 = vec_1;
+        };
+
+        // vec_1[1] = 666; // mutable borrow occurs here
+        some_closure();
+        // println!( "Vec 1: {:?}", vec_1); // borrow of moved value
+        // println!( "Vec 2: {:?}", vec_2);  // vec_2 not known here
     }
 }
