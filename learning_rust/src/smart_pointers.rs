@@ -92,4 +92,20 @@ mod test {
             a == *my_smart_pointer_1 // calls the Deref trait
         );
     }
+
+    use std::cell::RefCell;
+    #[test]
+    fn ref_cell_smart_pointer() {
+        let mut x = 50;
+        let ref_x1 = &x;
+        let ref_x2 = &x;
+        let ref_x3 = &mut x;
+
+        //        println!("{} {}", ref_x1, ref_x2);
+
+        let a = RefCell::new(10);
+        let b = a.borrow();
+        let c = a.borrow();
+        let mut d = a.borrow_mut(); // panic in runtime not in compile time
+    }
 }
